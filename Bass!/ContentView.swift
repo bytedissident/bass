@@ -29,8 +29,8 @@ enum Difficulty: Double {
     
     case easy = 3.0
     case medium = 2.0
-    case hard = 1.0
-    case expert = 0.5
+    case hard = 1.5
+    case expert = 0.75
 }
 
 struct NotePosition {
@@ -44,10 +44,10 @@ class Quiz: ObservableObject {
         // A STRING
         NotePosition(note: "C", xPosition: 500, yPosition: 82),
         NotePosition(note: "D", xPosition: 450, yPosition: 82),
-        NotePosition(note: "E", xPosition: 400, yPosition: 82),
-        NotePosition(note: "F", xPosition: 375, yPosition: 82),
-        NotePosition(note: "G", xPosition: 335, yPosition: 82),
-        NotePosition(note: "A", xPosition: 300, yPosition: 82),
+        NotePosition(note: "E", xPosition: 402, yPosition: 80),
+        NotePosition(note: "F", xPosition: 375, yPosition: 80),
+        NotePosition(note: "G", xPosition: 335, yPosition: 80),
+        NotePosition(note: "A", xPosition: 300, yPosition: 80),
         
         // E STRING
         NotePosition(note: "F", xPosition: 555, yPosition: 72),
@@ -63,10 +63,12 @@ class Quiz: ObservableObject {
     var currentNote = ""
     var correct = 0.0
     var total = 0.0
+    @Published var currentDifficulty = Difficulty.easy
     @Published var currentNoteX: CGFloat = 0
     @Published var currentNoteY: CGFloat = 0
     
     @Published var counter = 0
+    @Published var ctaLabel: String = "Start"
     private var timer: Timer?
     
     init() {
@@ -75,38 +77,43 @@ class Quiz: ObservableObject {
     
     func startTimer() {
         stopTimer()
-        timer = Timer.scheduledTimer(withTimeInterval: Difficulty.easy.rawValue, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: currentDifficulty.rawValue, repeats: true) { [weak self] _ in
             self?.displayNote()
         }
     }
     
     func stopTimer() {
+        ctaLabel = "Start"
         timer?.invalidate()
         timer = nil
         counter = 0
     }
     
-    private func timerTick() {
-        counter += 1
-        
-        // Check if you want to stop the timer after a certain number of ticks
-        if counter == 10 {
-            stopTimer()
-        }
-    }
-
    
     func configureQuiz(difficulty: Difficulty = .easy) {
+        currentDifficulty = difficulty
+        stopTimer()
+        ctaLabel = "Start"
         
     }
     
     func startQuiz() {
-        startTimer()
+        if ctaLabel == "Stop" {
+            stopTimer()
+        } else {
+            startTimer()
+            ctaLabel = "Stop"
+        }
     }
     
     func recordAnswer(note: String) {
         if currentNote == note {
             correct = correct + 1
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+        } else {
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.error)
         }
         total = total + 1
         let percentageAsDouble = ((correct / total) * 100)
@@ -128,14 +135,12 @@ class Quiz: ObservableObject {
     
     func vibrate() {
         let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.success)
+        generator.notificationOccurred(.warning)
     }
 }
 
 
 struct ContentView: View {
-    //@State private var selectedStrength = Difficulty.easy
-    //let strengths = [Difficulty.easy, Difficulty.medium, Difficulty.hard, Difficulty.expert]
     @StateObject private var quiz = Quiz()
     var body: some View {
         VStack {
@@ -153,7 +158,27 @@ struct ContentView: View {
                     .zIndex(100)
             }
             
-            Text("\(quiz.score)")
+            HStack {
+                Button("Easy", action: {
+                    quiz.configureQuiz(difficulty: .easy)
+                })
+                .foregroundColor((quiz.currentDifficulty == .easy ? .red : .blue))
+                
+                Button("Medium", action: {
+                    quiz.configureQuiz(difficulty: .medium)
+                })
+                .foregroundColor((quiz.currentDifficulty == .medium ? .red : .blue))
+                
+                Button("Hard", action: {
+                    quiz.configureQuiz(difficulty: .hard)
+                })
+                .foregroundColor((quiz.currentDifficulty == .hard ? .red : .blue))
+                
+                Button("Expert", action: {
+                    quiz.configureQuiz(difficulty: .expert)
+                })
+                .foregroundColor((quiz.currentDifficulty == .expert ? .red : .blue))
+            }
             HStack {
                 Button("C", action: {
                     quiz.recordAnswer(note: "C")
@@ -185,25 +210,15 @@ struct ContentView: View {
                     quiz.recordAnswer(note: "B")
                 }).padding()
             }
-            Button("Start", action: {
-                quiz.startQuiz()
-            }).padding()
+            HStack {
+                Button(quiz.ctaLabel, action: {
+                    quiz.startQuiz()
+                }).padding()
+                               
+                
+            }.padding()
             
-//            Form {
-//                Section {
-//                    Picker(Difficulty.easy, selection: $selectedStrength) {
-//                        ForEach(strengths, id: \.self) {
-//                            switch strengths {
-//                            case .easy:
-//                                Text("Easy")
-//                            case .medium:
-//                                Text("Medium")
-//
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+
         }
     }
 }

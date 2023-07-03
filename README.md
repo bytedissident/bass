@@ -1,0 +1,2 @@
+# bass
+Learn the notes

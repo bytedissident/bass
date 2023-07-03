@@ -133,66 +133,9 @@ class Quiz: ObservableObject {
 }
 
 
-//struct NeckView: View {
-//    let numberOfFrets = 21
-//    let numberOfStrings = 4
-//
-//    var body: some View {
-//        VStack(spacing: 0) {
-//            ForEach(0..<numberOfStrings) { stringIndex in
-//                HStack(spacing: 0) {
-//                    NeckFretView(fretIndex: 0)
-//                        .frame(maxWidth: .infinity)
-//                    ForEach(1..<numberOfFrets) { fretIndex in
-//                        NeckFretView(fretIndex: fretIndex)
-//                            .frame(maxWidth: .infinity)
-//                    }
-//                    NeckFretView(isLastFret: true)
-//                        .frame(maxWidth: .infinity)
-//                }
-//                .padding(.vertical, 4)
-//            }
-//        }
-//        .padding(.horizontal, 8)
-//    }
-//}
-//
-//struct NeckFretView: View {
-//    let fretIndex: Int
-//    let isLastFret: Bool
-//
-//    init(fretIndex: Int = 0, isLastFret: Bool = false) {
-//        self.fretIndex = fretIndex
-//        self.isLastFret = isLastFret
-//    }
-//
-//    var body: some View {
-//        VStack(spacing: 0) {
-//            Rectangle()
-//                .fill(Color.black)
-//                .frame(width: 2, height: isLastFret ? 16 : 28)
-//
-//            if !isLastFret {
-//                if [3, 5, 7, 9, 12].contains(fretIndex) {
-//                    Circle()
-//                        .fill(Color.red)
-//                        .frame(width: 8, height: 8)
-//                        .padding(.top, 4)
-//                } else {
-//                    Spacer()
-//                        .frame(height: 4)
-//                }
-//
-//                Rectangle()
-//                    .fill(Color.gray)
-//                    .frame(width: 20, height: 2)
-//            }
-//        }
-//    }
-//}
-
-
 struct ContentView: View {
+    //@State private var selectedStrength = Difficulty.easy
+    //let strengths = [Difficulty.easy, Difficulty.medium, Difficulty.hard, Difficulty.expert]
     @StateObject private var quiz = Quiz()
     var body: some View {
         VStack {
@@ -209,8 +152,6 @@ struct ContentView: View {
                     .position(x: quiz.currentNoteX, y: quiz.currentNoteY)
                     .zIndex(100)
             }
-                
-            //NeckView()
             
             Text("\(quiz.score)")
             HStack {
@@ -218,7 +159,7 @@ struct ContentView: View {
                     quiz.recordAnswer(note: "C")
                 })
                 .padding()
-               
+                
                 Button("D", action: {
                     quiz.recordAnswer(note: "D")
                 })
@@ -230,16 +171,16 @@ struct ContentView: View {
                 Button("F", action: {
                     quiz.recordAnswer(note: "F")
                 }).padding()
-               
-            
+                
+                
                 Button("G", action: {
                     quiz.recordAnswer(note: "G")
                 }).padding()
-            
+                
                 Button("A", action: {
                     quiz.recordAnswer(note: "A")
                 }).padding()
-            
+                
                 Button("B", action: {
                     quiz.recordAnswer(note: "B")
                 }).padding()
@@ -247,8 +188,23 @@ struct ContentView: View {
             Button("Start", action: {
                 quiz.startQuiz()
             }).padding()
+            
+//            Form {
+//                Section {
+//                    Picker(Difficulty.easy, selection: $selectedStrength) {
+//                        ForEach(strengths, id: \.self) {
+//                            switch strengths {
+//                            case .easy:
+//                                Text("Easy")
+//                            case .medium:
+//                                Text("Medium")
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
-        .padding()
     }
 }
 

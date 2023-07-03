@@ -50,12 +50,13 @@ class Quiz: ObservableObject {
         NotePosition(note: "A", xPosition: 300, yPosition: 82),
         
         // E STRING
-        NotePosition(note: "G", xPosition: 500, yPosition: 72),
-        NotePosition(note: "A", xPosition: 450, yPosition: 72),
-        NotePosition(note: "B", xPosition: 400, yPosition: 72),
-        NotePosition(note: "C", xPosition: 375, yPosition: 72),
-        NotePosition(note: "D", xPosition: 335, yPosition: 72),
-        NotePosition(note: "C", xPosition: 300, yPosition: 72)
+        NotePosition(note: "F", xPosition: 555, yPosition: 72),
+        NotePosition(note: "G", xPosition: 500, yPosition: 70),
+        NotePosition(note: "A", xPosition: 448, yPosition: 70),
+        NotePosition(note: "B", xPosition: 400, yPosition: 70),
+        NotePosition(note: "C", xPosition: 375, yPosition: 70),
+        NotePosition(note: "D", xPosition: 335, yPosition: 69),
+        NotePosition(note: "E", xPosition: 300, yPosition: 69)
         
     ]
     @Published var score = 0
@@ -64,6 +65,7 @@ class Quiz: ObservableObject {
     var total = 0.0
     @Published var currentNoteX: CGFloat = 0
     @Published var currentNoteY: CGFloat = 0
+    
     @Published var counter = 0
     private var timer: Timer?
     
